@@ -41,7 +41,7 @@ class ToolsMainMenu extends Component {
         text: formatMessage(this.props.intl, "tools", "menu.reports"),
         icon: <Ballot />,
         route: "/tools/reports",
-        redirectToUrl:'https://report.csuapps.minsante.cm/'
+        redirectToUrl:'https://csureport.minsante.cm/'
       });
     }
 
