@@ -9,6 +9,7 @@ class ToolsMainMenu extends Component {
   constructor(props) {
     super(props);
     this.isWorker = props.modulesManager.getConf("fe-core", "isWorker", false);
+    this.canRedirect = props.modulesManager.getConf("fe-tools", "canRedirect", true)
   }
 
   enablers = (enablers) => {
@@ -41,7 +42,7 @@ class ToolsMainMenu extends Component {
         text: formatMessage(this.props.intl, "tools", "menu.reports"),
         icon: <Ballot />,
         route: "/tools/reports",
-        redirectToUrl:'https://csureport.minsante.cm/'
+        redirectToUrl: !!this.canRedirect && this.canRedirect == true ? 'https://csureport.minsante.cm/' : null
       });
     }
 
