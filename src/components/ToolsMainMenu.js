@@ -9,7 +9,7 @@ class ToolsMainMenu extends Component {
   constructor(props) {
     super(props);
     this.isWorker = props.modulesManager.getConf("fe-core", "isWorker", false);
-    this.canRedirect = props.modulesManager.getConf("fe-tools", "canRedirect", true)
+    this.canRedirect = props.modulesManager.getConf("fe-tools", "canRedirect", false)
   }
 
   enablers = (enablers) => {
