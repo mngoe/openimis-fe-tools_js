@@ -1,0 +1,11 @@
+{
+  "tools.ExtractsPage.password.label": "Mot de passe ",
+  "tools.ExtractsPage.ResultDialog.downloadBtn": "Télécharger",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.error": "Echec du Téléchargement des claims",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.failed": "Vérifiez le fichier et le password",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.done": "Téléchargement éffectué avec succès"
+
+
+
+
+}
