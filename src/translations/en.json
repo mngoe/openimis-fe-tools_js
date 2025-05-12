@@ -108,5 +108,6 @@
   "tools.RegistersPage.insureesBlockTitle": "Insurees",
   "tools.RegistersPage.insurees.uploadLabel": "Upload Insurees",
   "tools.RegistersPage.insurees.downloadLabel": "Download Insurees",
-  "tools.ReportSearcher.moduleName": "{module} Module"
+  "tools.ReportSearcher.moduleName": "{module} Module",
+  "tools.ExtractsPage.password.label": "Password"
 }

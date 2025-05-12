@@ -8,6 +8,7 @@ import {
   apiHeaders,
   ProgressOrError,
   decodeId,
+  TextInput
 } from "@openimis/fe-core";
 import { useSelector } from "react-redux";
 
@@ -16,7 +17,7 @@ import { People, Autorenew as RenewIcon, Keyboard } from "@material-ui/icons";
 import FeedbackIcon from "@material-ui/icons/SpeakerNotesOutlined";
 import Block from "../components/Block";
 import { RIGHT_EXTRACTS } from "../constants";
-import {string} from "prop-types";
+import { string } from "prop-types";
 
 const EXTRACTS_URL = `${baseApiUrl}/tools/extracts`;
 
@@ -24,8 +25,9 @@ const OfficerDownloadBlock = (props) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
   const [officer, setOfficer] = useState();
+  const [password, setPassword] = useState({});
   const onExtractDownload = (extract, params) => (e) => {
-    const stringParams = Object.keys(params).map((k)=>`${k}=${encodeURIComponent(params[k])}`)?.join("&")
+    const stringParams = Object.keys(params).map((k) => `${k}=${encodeURIComponent(params[k])}`)?.join("&")
     return window.open(`${EXTRACTS_URL}/download_${extract}${stringParams ? `?${stringParams}` : ""}`);
   }
   const officer_id = officer ? decodeId(officer.id) : "";
@@ -44,13 +46,13 @@ const OfficerDownloadBlock = (props) => {
         </Grid>
         <Grid item xs={6}>
           <Button disabled={!officer} color="primary" variant="contained"
-                  onClick={onExtractDownload("feedbacks", {officer_id})}>
+            onClick={onExtractDownload("feedbacks", { officer_id })}>
             {formatMessage("OfficerDownloadBlock.downloadFeedbacksBtn")}
           </Button>
         </Grid>
         <Grid item xs={6} align="right">
           <Button disabled={!officer} color="primary" variant="contained"
-                  onClick={onExtractDownload("renewals", {officer_id})}>
+            onClick={onExtractDownload("renewals", { officer_id })}>
             {formatMessage("OfficerDownloadBlock.downloadRenewalsBtn")}
           </Button>
         </Grid>
@@ -80,6 +82,7 @@ const ClaimsUploadBlock = (props) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
   const [files, setFiles] = useState();
+  const [password, setPassword] = useState("");
   const [request, setRequest] = useState();
   const onSubmit = async () => {
     setRequest({ isLoading: true });
@@ -88,6 +91,8 @@ const ClaimsUploadBlock = (props) => {
       const f = files.item(i);
       formData.append(f.name, f);
     }
+    // Ajout du mot de passe au formData
+    formData.append("password", password);
     try {
       const response = await fetch(`${EXTRACTS_URL}/upload_claims`, {
         headers: apiHeaders,
@@ -127,9 +132,19 @@ const ClaimsUploadBlock = (props) => {
             required
             multiple
             inputProps={{
-              accept: ".xml, application/xml, text/xml",
+              accept: ".xml, .zip, .rar, application/xml, text/xml",
             }}
             type="file"
+          />
+        </Grid>
+        <Grid item xs={12}> 
+          <TextInput
+            required
+            type="password"
+            label={formatMessage("password.label")}
+            fullWidth
+            value={password}
+            onChange={(v) => setPassword(v)}
           />
         </Grid>
         <Grid item xs={6}>
@@ -351,7 +366,6 @@ const ExtractsPage = (props) => {
   const EXTRACTS_URL = `${baseApiUrl}/tools/extracts`;
 
   const onExtractDownload = (extract) => (e) => window.open(`${EXTRACTS_URL}/download_${extract}`);
-
 
   return (
     <>
