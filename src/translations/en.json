@@ -108,5 +108,17 @@
   "tools.RegistersPage.insureesBlockTitle": "Insurees",
   "tools.RegistersPage.insurees.uploadLabel": "Upload Insurees",
   "tools.RegistersPage.insurees.downloadLabel": "Download Insurees",
-  "tools.ReportSearcher.moduleName": "{module} Module"
+  "tools.ReportSearcher.moduleName": "{module} Module",
+  "tools.ExtractsPage.EximBankUploadBlock.title": "Upload Exim Bank Report",
+  "tools.ExtractsPage.EximBankUploadBlock.uploadBtn": "Upload",
+  "tools.ExtractsPage.EximBankUploadBlock.ResultDialog.okBtn": "OK",
+  "tools.ExtractsPage.EximBankUploadBlock.ResultDialog.success": "Success",
+  "tools.ExtractsPage.EximBankUploadBlock.ResultDialog.title": "Exim files Upload Done",
+  "tools.ExtractsPage.EximBankUploadBlock.errorMessage": " Error while upload data",
+  "tools.ExtractsPage.BdcBankUploadBlock.title": "Upload BDC Bank Report",
+  "tools.ExtractsPage.BdcBankUploadBlock.uploadBtn": "Upload",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.okBtn": "OK",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.success": "Success",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.title": "BDC files Upload Done",
+  "tools.ExtractsPage.BdcBankUploadBlock.errorMessage": " Error while upload data"
 }

@@ -1,0 +1,14 @@
+{
+    "tools.ExtractsPage.EximBankUploadBlock.title": "Importer une contribution d'Exim Bank",
+    "tools.ExtractsPage.EximBankUploadBlock.uploadBtn": "Importer",
+    "tools.ExtractsPage.EximBankUploadBlock.ResultDialog.okBtn": "OK",
+    "tools.ExtractsPage.EximBankUploadBlock.ResultDialog.success": "Réussie",
+    "tools.ExtractsPage.EximBankUploadBlock.ResultDialog.title": "Fichier Exim importer avec succès",
+    "tools.ExtractsPage.EximBankUploadBlock.errorMessage": "une erreur s'est produite",
+    "tools.ExtractsPage.BdcBankUploadBlock.title": "Importer une contribution de la BDC Bank",
+    "tools.ExtractsPage.BdcBankUploadBlock.uploadBtn": "Importer",
+    "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.okBtn": "OK",
+    "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.success": "Réussie",
+    "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.title": "Fichier BDC importer avec succès",
+    "tools.ExtractsPage.BdcBankUploadBlock.errorMessage": "une erreur s'est produite"
+}

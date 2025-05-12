@@ -19,6 +19,7 @@ import { RIGHT_EXTRACTS } from "../constants";
 import {string} from "prop-types";
 
 const EXTRACTS_URL = `${baseApiUrl}/tools/extracts`;
+const BANK_URL= `${baseApiUrl}/im_export/imports`;
 
 const OfficerDownloadBlock = (props) => {
   const modulesManager = useModulesManager();
@@ -340,6 +341,136 @@ const FeedbacksUploadBlock = (props) => {
   );
 };
 
+const EximBankUploadBlock = (props) => {
+  const modulesManager = useModulesManager();
+  const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
+  const [files, setFiles] = useState();
+  const [request, setRequest] = useState();
+  const onSubmit = async () => {
+    setRequest({ isLoading: true });
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      const f = files.item(i);
+      formData.append(f.name, f);
+    }
+    try {
+      const response = await fetch(`${BANK_URL}/exim_bank`, {
+        headers: apiHeaders,
+        body: formData,
+        method: "POST",
+        credentials: "same-origin",
+      });
+      if (response.status >= 400) {
+        throw new Error("Unknown error");
+      }
+      const payload = await response.json();
+      setRequest({ isLoading: false, error: null, payload });
+    } catch (exc) {
+      console.error(exc);
+      setRequest({ isLoading: false, error: exc.message || formatMessage("EximBankUploadBlock.errorMessage") });
+    } finally {
+      setFiles(null);
+    }
+  };
+
+  return (
+    <Block title={formatMessage("EximBankUploadBlock.title")}>
+      {request && (
+        <ResultDialog
+          title={formatMessage("EximBankUploadBlock.ResultDialog.title")}
+          open
+          onClose={() => setRequest(undefined)}
+        >
+          <ProgressOrError isLoading={request.isLoading} error={request.error} />
+          {request?.payload?.success && formatMessage("EximBankUploadBlock.ResultDialog.success")}
+        </ResultDialog>
+      )}
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Input
+            onChange={(event) => setFiles(event.target.files)}
+            required
+            inputProps={{
+              accept: ".xlsx, application/xlsx, text/xlsx",
+            }}
+            type="file"
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Button disabled={!files || request?.isLoading} variant="contained" onClick={onSubmit}>
+            <Keyboard />{formatMessage("EximBankUploadBlock.uploadBtn")}
+          </Button>
+        </Grid>
+      </Grid>
+    </Block>
+  );
+};
+
+const BdcBankUploadBlock = (props) => {
+  const modulesManager = useModulesManager();
+  const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
+  const [files, setFiles] = useState();
+  const [request, setRequest] = useState();
+  const onSubmit = async () => {
+    setRequest({ isLoading: true });
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      const f = files.item(i);
+      formData.append(f.name, f);
+    }
+    try {
+      const response = await fetch(`${BANK_URL}/bdc_bank`, {
+        headers: apiHeaders,
+        body: formData,
+        method: "POST",
+        credentials: "same-origin",
+      });
+      if (response.status >= 400) {
+        throw new Error("Unknown error");
+      }
+      const payload = await response.json();
+      setRequest({ isLoading: false, error: null, payload });
+    } catch (exc) {
+      console.error(exc);
+      setRequest({ isLoading: false, error: exc.message || formatMessage("bdcBankUpload.errorMessage") });
+    } finally {
+      setFiles(null);
+    }
+  };
+
+  return (
+    <Block title={formatMessage("BdcBankUploadBlock.title")}>
+      {request && (
+        <ResultDialog
+          title={formatMessage("BdcBankUploadBlock.ResultDialog.title")}
+          open
+          onClose={() => setRequest(undefined)}
+        >
+          <ProgressOrError isLoading={request.isLoading} error={request.error} />
+          {request?.payload?.success && formatMessage("BdcBankUploadBlock.ResultDialog.success")}
+        </ResultDialog>
+      )}
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Input
+            onChange={(event) => setFiles(event.target.files)}
+            required
+            inputProps={{
+              accept: ".xlsx, application/xlsx, text/xlsx",
+            }}
+            type="file"
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Button disabled={!files || request?.isLoading} variant="contained" onClick={onSubmit}>
+            <Keyboard />{formatMessage("BdcBankUploadBlock.uploadBtn")}
+          </Button>
+        </Grid>
+      </Grid>
+    </Block>
+  );
+};
+
 const ExtractsPage = (props) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
@@ -378,6 +509,12 @@ const ExtractsPage = (props) => {
           </Grid>
           <Grid item xs={4}>
             <RenewalsUploadBlock />
+          </Grid>
+          <Grid item xs={4}>
+            <EximBankUploadBlock />
+          </Grid>
+          <Grid item xs={4}>
+            <BdcBankUploadBlock />
           </Grid>
         </Grid>
       </Box>
