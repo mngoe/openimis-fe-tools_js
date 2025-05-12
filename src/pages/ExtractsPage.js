@@ -78,12 +78,63 @@ const ResultDialog = ({ open, title, isLoading, children, onClose }) => {
   );
 };
 
+const CustomResultDialog = ({ open, title, isLoading, children, onClose, downloadUrl }) => {
+  const modulesManager = useModulesManager();
+  const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
+
+  const handleDownload = () => {
+    if (downloadUrl) {
+      window.open(downloadUrl, '_blank');
+    }
+    onClose()
+  };
+
+  return (
+    <Dialog open={open}>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent>{children}</DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="primary" disabled={isLoading}>
+          {formatMessage("ResultDialog.okBtn")}
+        </Button>
+        {downloadUrl && (
+          <Button
+            onClick={handleDownload}
+            color="primary"
+            variant="contained"
+            disabled={isLoading}
+          >
+            {formatMessage("ResultDialog.downloadBtn") || "Télécharger"}
+          </Button>
+        )}
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 const ClaimsUploadBlock = (props) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
   const [files, setFiles] = useState();
   const [password, setPassword] = useState("");
   const [request, setRequest] = useState();
+  const [downloadUrl, setDownloadUrl] = useState(null);
+
+  // État initial pour réinitialisation
+  const initialState = {
+    files: null,
+    password: "",
+    request: undefined
+  };
+  
+  // Fonction pour réinitialiser tous les états
+  const resetAllState = () => {
+    setFiles(null);
+    setPassword("");
+    setRequest(undefined);
+    setDownloadUrl(null);
+  };
+  
   const onSubmit = async () => {
     setRequest({ isLoading: true });
     const formData = new FormData();
@@ -103,27 +154,45 @@ const ClaimsUploadBlock = (props) => {
       if (response.status >= 400) {
         throw new Error("Unknown error");
       }
-      const payload = await response.json();
-      setRequest({ isLoading: false, error: null, payload });
+      
+      // Créer un objet URL pour le téléchargement
+      const responseClone = response.clone(); // Cloner la réponse pour pouvoir l'utiliser plusieurs fois
+      const blob = await responseClone.blob();
+      const url = window.URL.createObjectURL(blob);
+      setDownloadUrl(url);
+      
+      setRequest({ 
+        isLoading: false, 
+        error: formatMessage("ClaimsUploadBlock.title"), 
+        payload: response,
+        status: response.status
+      });
     } catch (exc) {
       console.error(exc);
-      setRequest({ isLoading: false, error: exc.message || formatMessage("ClaimsUploadBlock.errorMessage") });
+      setRequest({ isLoading: false, message: exc.message || formatMessage("ClaimsUploadBlock.errorMessage") });
     } finally {
+      // Nous ne réinitialisons que les fichiers ici
       setFiles(null);
     }
   };
-
+  
+  // Utiliser la fonction de réinitialisation complète
+  const onClose = () => {
+    resetAllState();
+  };
+  
   return (
     <Block title={formatMessage("ClaimsUploadBlock.title")}>
       {request && (
-        <ResultDialog
-          title={formatMessage("ClaimsUploadBlock.ResultDialog.title")}
+        <CustomResultDialog
+          title={ request.status == 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.title") : formatMessage("ClaimsUploadBlock.ResultDialog.error")}
           open
-          onClose={() => setRequest(undefined)}
+          onClose={onClose}
+          downloadUrl={downloadUrl}
         >
           <ProgressOrError isLoading={request.isLoading} error={request.error} />
-          {request?.payload?.success && formatMessage("ClaimsUploadBlock.ResultDialog.success")}
-        </ResultDialog>
+          {request.status === 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.done") : formatMessage("ClaimsUploadBlock.ResultDialog.failed")}
+        </CustomResultDialog>
       )}
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -135,6 +204,7 @@ const ClaimsUploadBlock = (props) => {
               accept: ".xml, .zip, .rar, application/xml, text/xml",
             }}
             type="file"
+            value={files ? undefined : ""}
           />
         </Grid>
         <Grid item xs={12}> 
