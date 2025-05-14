@@ -3,7 +3,10 @@
   "tools.ExtractsPage.ResultDialog.downloadBtn": "Télécharger",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.error": "Echec du Téléchargement des claims",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.failed": "Vérifiez le fichier et le password",
-  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.done": "Téléchargement éffectué avec succès"
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.done": "Téléchargement éffectué avec succès",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.ongoing": "Téléchargement des claims cours.....",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.titleOngoing": " Téléchargement en cours"
+
 
 
 

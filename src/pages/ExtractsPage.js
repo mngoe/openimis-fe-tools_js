@@ -126,7 +126,7 @@ const ClaimsUploadBlock = (props) => {
     password: "",
     request: undefined
   };
-  
+
   // Fonction pour réinitialiser tous les états
   const resetAllState = () => {
     setFiles(null);
@@ -134,7 +134,7 @@ const ClaimsUploadBlock = (props) => {
     setRequest(undefined);
     setDownloadUrl(null);
   };
-  
+
   const onSubmit = async () => {
     setRequest({ isLoading: true });
     const formData = new FormData();
@@ -154,44 +154,44 @@ const ClaimsUploadBlock = (props) => {
       if (response.status >= 400) {
         throw new Error("Unknown error");
       }
-      
+
       // Créer un objet URL pour le téléchargement
       const responseClone = response.clone(); // Cloner la réponse pour pouvoir l'utiliser plusieurs fois
       const blob = await responseClone.blob();
       const url = window.URL.createObjectURL(blob);
       setDownloadUrl(url);
-      
-      setRequest({ 
-        isLoading: false, 
-        error: formatMessage("ClaimsUploadBlock.title"), 
+
+      setRequest({
+        isLoading: false,
+        error: formatMessage("ClaimsUploadBlock.title"),
         payload: response,
         status: response.status
       });
     } catch (exc) {
       console.error(exc);
-      setRequest({ isLoading: false, message: exc.message || formatMessage("ClaimsUploadBlock.errorMessage") });
+      setRequest({ isLoading: false, message: exc.message || formatMessage("ClaimsUploadBlock.errorMessage"), status: 500 });
     } finally {
       // Nous ne réinitialisons que les fichiers ici
       setFiles(null);
     }
   };
-  
+
   // Utiliser la fonction de réinitialisation complète
   const onClose = () => {
     resetAllState();
   };
-  
+
   return (
     <Block title={formatMessage("ClaimsUploadBlock.title")}>
       {request && (
         <CustomResultDialog
-          title={ request.status == 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.title") : formatMessage("ClaimsUploadBlock.ResultDialog.error")}
+          title={request.status == 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.title") : request.status === 500 ? formatMessage("ClaimsUploadBlock.ResultDialog.error") : formatMessage("ClaimsUploadBlock.ResultDialog.titleOngoing")}
           open
           onClose={onClose}
           downloadUrl={downloadUrl}
         >
           <ProgressOrError isLoading={request.isLoading} error={request.error} />
-          {request.status === 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.done") : formatMessage("ClaimsUploadBlock.ResultDialog.failed")}
+          {request.status === 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.done") : request.status === 500 ? formatMessage("ClaimsUploadBlock.ResultDialog.failed") : formatMessage("ClaimsUploadBlock.ResultDialog.ongoing")}
         </CustomResultDialog>
       )}
       <Grid container spacing={2}>
@@ -207,7 +207,7 @@ const ClaimsUploadBlock = (props) => {
             value={files ? undefined : ""}
           />
         </Grid>
-        <Grid item xs={12}> 
+        <Grid item xs={12}>
           <TextInput
             required
             type="password"
