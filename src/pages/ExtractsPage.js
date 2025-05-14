@@ -349,10 +349,8 @@ const EximBankUploadBlock = (props) => {
   const onSubmit = async () => {
     setRequest({ isLoading: true });
     const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      const f = files.item(i);
-      formData.append(f.name, f);
-    }
+    const f = files.item(0);
+    formData.append(f.name, f);
     try {
       const response = await fetch(`${BANK_URL}/exim_bank`, {
         headers: apiHeaders,
@@ -390,6 +388,7 @@ const EximBankUploadBlock = (props) => {
           <Input
             onChange={(event) => setFiles(event.target.files)}
             required
+            multiple
             inputProps={{
               accept: ".xlsx, application/xlsx, text/xlsx",
             }}
