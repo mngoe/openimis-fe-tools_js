@@ -113,7 +113,11 @@
   "tools.ExtractsPage.ResultDialog.downloadBtn": "Download",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.error": "Upload Claim Failed ",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.failed": "Check the file and the password",
-  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.done": "Upload Claim Done"
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.done": "Upload Claim Done",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.ongoing": "Uploading claims ....",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.titleOngoing": " Uploading ongoing "
+
+
 
 
 
