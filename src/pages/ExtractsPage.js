@@ -16,17 +16,17 @@ import { People, Autorenew as RenewIcon, Keyboard } from "@material-ui/icons";
 import FeedbackIcon from "@material-ui/icons/SpeakerNotesOutlined";
 import Block from "../components/Block";
 import { RIGHT_EXTRACTS } from "../constants";
-import {string} from "prop-types";
+import { string } from "prop-types";
 
 const EXTRACTS_URL = `${baseApiUrl}/tools/extracts`;
-const BANK_URL= `${baseApiUrl}/im_export/imports`;
+const BANK_URL = `${baseApiUrl}/im_export/imports`;
 
 const OfficerDownloadBlock = (props) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
   const [officer, setOfficer] = useState();
   const onExtractDownload = (extract, params) => (e) => {
-    const stringParams = Object.keys(params).map((k)=>`${k}=${encodeURIComponent(params[k])}`)?.join("&")
+    const stringParams = Object.keys(params).map((k) => `${k}=${encodeURIComponent(params[k])}`)?.join("&")
     return window.open(`${EXTRACTS_URL}/download_${extract}${stringParams ? `?${stringParams}` : ""}`);
   }
   const officer_id = officer ? decodeId(officer.id) : "";
@@ -45,13 +45,13 @@ const OfficerDownloadBlock = (props) => {
         </Grid>
         <Grid item xs={6}>
           <Button disabled={!officer} color="primary" variant="contained"
-                  onClick={onExtractDownload("feedbacks", {officer_id})}>
+            onClick={onExtractDownload("feedbacks", { officer_id })}>
             {formatMessage("OfficerDownloadBlock.downloadFeedbacksBtn")}
           </Button>
         </Grid>
         <Grid item xs={6} align="right">
           <Button disabled={!officer} color="primary" variant="contained"
-                  onClick={onExtractDownload("renewals", {officer_id})}>
+            onClick={onExtractDownload("renewals", { officer_id })}>
             {formatMessage("OfficerDownloadBlock.downloadRenewalsBtn")}
           </Button>
         </Grid>
@@ -350,7 +350,7 @@ const EximBankUploadBlock = (props) => {
     setRequest({ isLoading: true });
     const formData = new FormData();
     const f = files.item(0);
-    formData.append(f.name, f);
+    formData.append("file", f);
     try {
       const response = await fetch(`${BANK_URL}/exim_bank`, {
         headers: apiHeaders,
@@ -358,14 +358,15 @@ const EximBankUploadBlock = (props) => {
         method: "POST",
         credentials: "same-origin",
       });
+      const responseBody = await response.json();
       if (response.status >= 400) {
-        throw new Error("Unknown error");
+        setRequest({ isLoading: false, errors: responseBody.errors, payload: responseBody });
+      } else {
+        setRequest({ isLoading: false, error: null, payload: responseBody });
       }
-      const payload = await response.json();
-      setRequest({ isLoading: false, error: null, payload });
     } catch (exc) {
       console.error(exc);
-      setRequest({ isLoading: false, error: exc.message || formatMessage("EximBankUploadBlock.errorMessage") });
+      //setRequest({ isLoading: false, error: exc.message || formatMessage("EximBankUploadBlock.errorMessage") });
     } finally {
       setFiles(null);
     }
@@ -380,7 +381,15 @@ const EximBankUploadBlock = (props) => {
           onClose={() => setRequest(undefined)}
         >
           <ProgressOrError isLoading={request.isLoading} error={request.error} />
-          {request?.payload?.success && formatMessage("EximBankUploadBlock.ResultDialog.success")}
+          {!!request.payload ? request?.payload?.success ?
+            formatMessage("EximBankUploadBlock.ResultDialog.success") :
+            <ul>
+              {request.errors.map((str, index) => (
+                <li key={index}>{str}</li>
+              ))}
+            </ul>
+            : null
+          }
         </ResultDialog>
       )}
       <Grid container spacing={2}>
@@ -388,7 +397,6 @@ const EximBankUploadBlock = (props) => {
           <Input
             onChange={(event) => setFiles(event.target.files)}
             required
-            multiple
             inputProps={{
               accept: ".xlsx, application/xlsx, text/xlsx",
             }}
@@ -413,10 +421,8 @@ const BdcBankUploadBlock = (props) => {
   const onSubmit = async () => {
     setRequest({ isLoading: true });
     const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      const f = files.item(i);
-      formData.append(f.name, f);
-    }
+    const f = files.item(0);
+    formData.append("file", f);
     try {
       const response = await fetch(`${BANK_URL}/bdc_bank`, {
         headers: apiHeaders,
@@ -424,14 +430,15 @@ const BdcBankUploadBlock = (props) => {
         method: "POST",
         credentials: "same-origin",
       });
+      const responseBody = await response.json();
       if (response.status >= 400) {
-        throw new Error("Unknown error");
+        setRequest({ isLoading: false, errors: responseBody.errors, payload: responseBody });
+      } else {
+        setRequest({ isLoading: false, error: null, payload: responseBody });
       }
-      const payload = await response.json();
-      setRequest({ isLoading: false, error: null, payload });
     } catch (exc) {
       console.error(exc);
-      setRequest({ isLoading: false, error: exc.message || formatMessage("bdcBankUpload.errorMessage") });
+      //setRequest({ isLoading: false, error: exc.message || formatMessage("bdcBankUpload.errorMessage") });
     } finally {
       setFiles(null);
     }
@@ -446,7 +453,14 @@ const BdcBankUploadBlock = (props) => {
           onClose={() => setRequest(undefined)}
         >
           <ProgressOrError isLoading={request.isLoading} error={request.error} />
-          {request?.payload?.success && formatMessage("BdcBankUploadBlock.ResultDialog.success")}
+          {!!request.payload ? request?.payload?.success ?
+            formatMessage("BdcBankUploadBlock.ResultDialog.success") :
+            <ul>
+              {request.errors.map((str, index) => (
+                <li key={index}>{str}</li>
+              ))}
+            </ul>
+            : null}
         </ResultDialog>
       )}
       <Grid container spacing={2}>

@@ -113,12 +113,12 @@
   "tools.ExtractsPage.EximBankUploadBlock.uploadBtn": "Upload",
   "tools.ExtractsPage.EximBankUploadBlock.ResultDialog.okBtn": "OK",
   "tools.ExtractsPage.EximBankUploadBlock.ResultDialog.success": "Success",
-  "tools.ExtractsPage.EximBankUploadBlock.ResultDialog.title": "Exim files Upload Done",
+  "tools.ExtractsPage.EximBankUploadBlock.ResultDialog.title": "Exim bank upload result",
   "tools.ExtractsPage.EximBankUploadBlock.errorMessage": " Error while upload data",
   "tools.ExtractsPage.BdcBankUploadBlock.title": "Upload BDC Bank Report",
   "tools.ExtractsPage.BdcBankUploadBlock.uploadBtn": "Upload",
   "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.okBtn": "OK",
-  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.success": "Success",
-  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.title": "BDC files Upload Done",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.success": "Success import",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.title": "BDC Bank upload result",
   "tools.ExtractsPage.BdcBankUploadBlock.errorMessage": " Error while upload data"
 }
