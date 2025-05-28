@@ -13,7 +13,7 @@
     "tools.ExtractsPage.BdcBankUploadBlock.errorMessage": "une erreur s'est produite",
     "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.#": "#",
     "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.totalTransaction": "Nomnbre de transaction traités ",
-    "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.chfID": "ChfId",
+    "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.chfID": "Numéro d'assuré",
     "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.amount": "Montant",
     "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.status": "Statut",
     "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.invoiceCode": "Code de facture",

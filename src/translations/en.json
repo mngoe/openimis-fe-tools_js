@@ -123,7 +123,7 @@
   "tools.ExtractsPage.BdcBankUploadBlock.errorMessage": " Error while upload data",
   "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.#": "#",
   "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.totalTransaction": "Number of processed transactions",
-  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.chfID": "ChfId",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.chfID": "Insuree number",
   "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.amount": "Amount",
   "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.status": "Status",
   "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.invoiceCode": "Invoide code",
