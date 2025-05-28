@@ -120,5 +120,14 @@
   "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.okBtn": "OK",
   "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.success": "Success import",
   "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.title": "BDC Bank upload result",
-  "tools.ExtractsPage.BdcBankUploadBlock.errorMessage": " Error while upload data"
+  "tools.ExtractsPage.BdcBankUploadBlock.errorMessage": " Error while upload data",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.#": "#",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.totalTransaction": "Number of processed transactions",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.chfID": "ChfId",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.amount": "Amount",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.status": "Status",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.invoiceCode": "Invoide code",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.paiementId": "Payment Id",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.completed": "Completed",
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.totalKmf": "Total (KMF)"
 }

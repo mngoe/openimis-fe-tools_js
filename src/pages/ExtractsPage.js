@@ -65,7 +65,9 @@ const ResultDialog = ({ open, title, isLoading, children, onClose }) => {
   const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open}
+      fullWidth
+      maxWidth="xl">
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions>
@@ -376,20 +378,61 @@ const EximBankUploadBlock = (props) => {
     <Block title={formatMessage("EximBankUploadBlock.title")}>
       {request && (
         <ResultDialog
-          title={formatMessage("EximBankUploadBlock.ResultDialog.title")}
+          title={formatMessage("BdcBankUploadBlock.ResultDialog.title")}
           open
           onClose={() => setRequest(undefined)}
         >
           <ProgressOrError isLoading={request.isLoading} error={request.error} />
-          {!!request.payload ? request?.payload?.success ?
-            formatMessage("EximBankUploadBlock.ResultDialog.success") :
-            <ul>
-              {request.errors.map((str, index) => (
-                <li key={index}>{str}</li>
-              ))}
-            </ul>
-            : null
-          }
+
+          {!!request.payload && (
+            <>
+              {request.payload.success && (
+                <p style={{ color: "green", fontWeight: "bold" }}>
+                  {formatMessage("BdcBankUploadBlock.ResultDialog.success")}
+                </p>
+              )}
+
+              <p><strong>{formatMessage("BdcBankUploadBlock.ResultDialog.totalTransaction")} :</strong> {request.payload.transactions.length}</p>
+              <p><strong>{formatMessage("BdcBankUploadBlock.ResultDialog.totalKmf")} : </strong> {request.payload.total_kmf}</p>
+
+              {request.payload.processed.length ? (
+              <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "1rem" }}>
+                <thead>
+                  <tr>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.#")}</th>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.chfID")}</th>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.amount")}</th>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.status")}</th>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.invoiceCode")}</th>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.paiementId")}</th>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.completed")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {request.payload.processed.map((tx, index) => (
+                    <tr key={index}>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{index + 1}</td>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.insuree_chf_id}</td>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.amount}</td>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.status}</td>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.invoice_code || "N/A"}</td>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.payment_id || "N/A"}</td>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{!!tx.complete  ? ( tx.complete).toString() : "N/A"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>) : null}
+
+              {/* Liste des erreurs en dessous du tableau */}
+              {request.errors?.length > 0 && (
+                <ul style={{ color: "red" }}>
+                  {request.errors.map((str, index) => (
+                    <li key={index}>{str}</li>
+                  ))}
+                </ul>
+              )}
+            </>
+          )}
         </ResultDialog>
       )}
       <Grid container spacing={2}>
@@ -453,14 +496,56 @@ const BdcBankUploadBlock = (props) => {
           onClose={() => setRequest(undefined)}
         >
           <ProgressOrError isLoading={request.isLoading} error={request.error} />
-          {!!request.payload ? request?.payload?.success ?
-            formatMessage("BdcBankUploadBlock.ResultDialog.success") :
-            <ul>
-              {request.errors.map((str, index) => (
-                <li key={index}>{str}</li>
-              ))}
-            </ul>
-            : null}
+
+          {!!request.payload && (
+            <>
+              {request.payload.success && (
+                <p style={{ color: "green", fontWeight: "bold" }}>
+                  {formatMessage("BdcBankUploadBlock.ResultDialog.success")}
+                </p>
+              )}
+
+              <p><strong>{formatMessage("BdcBankUploadBlock.ResultDialog.totalTransaction")} :</strong> {request.payload.transactions.length}</p>
+              <p><strong>{formatMessage("BdcBankUploadBlock.ResultDialog.totalKmf")} : </strong> {request.payload.total_kmf}</p>
+
+              {request.payload.processed.length ? (
+              <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "1rem" }}>
+                <thead>
+                  <tr>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.#")}</th>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.chfID")}</th>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.amount")}</th>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.status")}</th>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.invoiceCode")}</th>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.paiementId")}</th>
+                    <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("BdcBankUploadBlock.ResultDialog.completed")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {request.payload.processed.map((tx, index) => (
+                    <tr key={index}>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{index + 1}</td>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.insuree_chf_id}</td>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.amount}</td>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.status}</td>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.invoice_code || "N/A"}</td>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.payment_id || "N/A"}</td>
+                      <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{(tx.complete).toString() || "N/A"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>) : null}
+
+              {/* Liste des erreurs en dessous du tableau */}
+              {request.errors?.length > 0 && (
+                <ul style={{ color: "red" }}>
+                  {request.errors.map((str, index) => (
+                    <li key={index}>{str}</li>
+                  ))}
+                </ul>
+              )}
+            </>
+          )}
         </ResultDialog>
       )}
       <Grid container spacing={2}>
