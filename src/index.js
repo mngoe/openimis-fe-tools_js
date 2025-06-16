@@ -10,9 +10,11 @@ import ReportsPage from "./pages/ReportsPage";
 import messages_en from "./translations/en.json";
 import ReportDefinitionEditorDialog from "./components/ReportDefinitionEditorDialog";
 import ReportPicker from "./components/ReportPicker";
+import messages_fr from "./translations/fr.json";
+
 
 const DEFAULT_CONFIG = {
-  "translations": [{ key: "en", messages: messages_en }],
+  "translations": [{ key: "en", messages: messages_en }, { key: "fr", messages: messages_fr }],
   "refs": [
     { key: "tools.reports", ref: "tools/reports" },
     { key: "tools.ReportDefinitionEditorDialog", ref: ReportDefinitionEditorDialog },
