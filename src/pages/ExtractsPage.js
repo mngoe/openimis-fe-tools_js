@@ -8,6 +8,7 @@ import {
   apiHeaders,
   ProgressOrError,
   decodeId,
+  TextInput
 } from "@openimis/fe-core";
 import { useSelector } from "react-redux";
 
@@ -16,7 +17,7 @@ import { People, Autorenew as RenewIcon, Keyboard } from "@material-ui/icons";
 import FeedbackIcon from "@material-ui/icons/SpeakerNotesOutlined";
 import Block from "../components/Block";
 import { RIGHT_EXTRACTS } from "../constants";
-import {string} from "prop-types";
+import { string } from "prop-types";
 
 const EXTRACTS_URL = `${baseApiUrl}/tools/extracts`;
 
@@ -24,8 +25,9 @@ const OfficerDownloadBlock = (props) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
   const [officer, setOfficer] = useState();
+  const [password, setPassword] = useState({});
   const onExtractDownload = (extract, params) => (e) => {
-    const stringParams = Object.keys(params).map((k)=>`${k}=${encodeURIComponent(params[k])}`)?.join("&")
+    const stringParams = Object.keys(params).map((k) => `${k}=${encodeURIComponent(params[k])}`)?.join("&")
     return window.open(`${EXTRACTS_URL}/download_${extract}${stringParams ? `?${stringParams}` : ""}`);
   }
   const officer_id = officer ? decodeId(officer.id) : "";
@@ -44,13 +46,13 @@ const OfficerDownloadBlock = (props) => {
         </Grid>
         <Grid item xs={6}>
           <Button disabled={!officer} color="primary" variant="contained"
-                  onClick={onExtractDownload("feedbacks", {officer_id})}>
+            onClick={onExtractDownload("feedbacks", { officer_id })}>
             {formatMessage("OfficerDownloadBlock.downloadFeedbacksBtn")}
           </Button>
         </Grid>
         <Grid item xs={6} align="right">
           <Button disabled={!officer} color="primary" variant="contained"
-                  onClick={onExtractDownload("renewals", {officer_id})}>
+            onClick={onExtractDownload("renewals", { officer_id })}>
             {formatMessage("OfficerDownloadBlock.downloadRenewalsBtn")}
           </Button>
         </Grid>
@@ -76,11 +78,62 @@ const ResultDialog = ({ open, title, isLoading, children, onClose }) => {
   );
 };
 
+const CustomResultDialog = ({ open, title, isLoading, children, onClose, downloadUrl }) => {
+  const modulesManager = useModulesManager();
+  const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
+
+  const handleDownload = () => {
+    if (downloadUrl) {
+      window.open(downloadUrl, '_blank');
+    }
+    onClose()
+  };
+
+  return (
+    <Dialog open={open}>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent>{children}</DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="primary" disabled={isLoading}>
+          {formatMessage("ResultDialog.okBtn")}
+        </Button>
+        {downloadUrl && (
+          <Button
+            onClick={handleDownload}
+            color="primary"
+            variant="contained"
+            disabled={isLoading}
+          >
+            {formatMessage("ResultDialog.downloadBtn") || "Télécharger"}
+          </Button>
+        )}
+      </DialogActions>
+    </Dialog>
+  );
+};
 const ClaimsUploadBlock = (props) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
   const [files, setFiles] = useState();
+  const [password, setPassword] = useState("");
   const [request, setRequest] = useState();
+  const [downloadUrl, setDownloadUrl] = useState(null);
+
+  // État initial pour réinitialisation
+  const initialState = {
+    files: null,
+    password: "",
+    request: undefined
+  };
+
+  // Fonction pour réinitialiser tous les états
+  const resetAllState = () => {
+    setFiles(null);
+    setPassword("");
+    setRequest(undefined);
+    setDownloadUrl(null);
+  };
+
   const onSubmit = async () => {
     setRequest({ isLoading: true });
     const formData = new FormData();
@@ -88,6 +141,8 @@ const ClaimsUploadBlock = (props) => {
       const f = files.item(i);
       formData.append(f.name, f);
     }
+        // Ajout du mot de passe au formData
+        formData.append("password", password);
     try {
       const response = await fetch(`${EXTRACTS_URL}/upload_claims`, {
         headers: apiHeaders,
@@ -98,27 +153,43 @@ const ClaimsUploadBlock = (props) => {
       if (response.status >= 400) {
         throw new Error("Unknown error");
       }
-      const payload = await response.json();
-      setRequest({ isLoading: false, error: null, payload });
+      // Créer un objet URL pour le téléchargement
+      const responseClone = response.clone(); // Cloner la réponse pour pouvoir l'utiliser plusieurs fois
+      const blob = await responseClone.blob();
+      const url = window.URL.createObjectURL(blob);
+      setDownloadUrl(url);
+
+      setRequest({ 
+        isLoading: false, 
+        error: formatMessage("ClaimsUploadBlock.title"), 
+        payload: response,
+        status: response.status
+      });
     } catch (exc) {
       console.error(exc);
-      setRequest({ isLoading: false, error: exc.message || formatMessage("ClaimsUploadBlock.errorMessage") });
+      setRequest({ isLoading: false, message: exc.message || formatMessage("ClaimsUploadBlock.errorMessage") });
     } finally {
       setFiles(null);
     }
   };
 
+    // Utiliser la fonction de réinitialisation complète
+    const onClose = () => {
+      resetAllState();
+    };
+
   return (
     <Block title={formatMessage("ClaimsUploadBlock.title")}>
       {request && (
-        <ResultDialog
-          title={formatMessage("ClaimsUploadBlock.ResultDialog.title")}
+        <CustomResultDialog
+          title={ request.status == 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.title") : formatMessage("ClaimsUploadBlock.ResultDialog.error")}
           open
-          onClose={() => setRequest(undefined)}
+          onClose={onClose}
+          downloadUrl={downloadUrl}
         >
           <ProgressOrError isLoading={request.isLoading} error={request.error} />
-          {request?.payload?.success && formatMessage("ClaimsUploadBlock.ResultDialog.success")}
-        </ResultDialog>
+          {request.status === 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.done") : formatMessage("ClaimsUploadBlock.ResultDialog.failed")}
+        </CustomResultDialog>
       )}
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -127,9 +198,20 @@ const ClaimsUploadBlock = (props) => {
             required
             multiple
             inputProps={{
-              accept: ".xml, application/xml, text/xml",
+              accept: ".xml, .zip, .rar, application/xml, text/xml",
             }}
             type="file"
+            value={files ? undefined : ""}
+            />
+          </Grid>
+          <Grid item xs={12}> 
+            <TextInput
+              required
+              type="password"
+              label={formatMessage("password.label")}
+              fullWidth
+              value={password}
+              onChange={(v) => setPassword(v)}
           />
         </Grid>
         <Grid item xs={6}>

@@ -108,5 +108,10 @@
   "tools.RegistersPage.insureesBlockTitle": "Insurees",
   "tools.RegistersPage.insurees.uploadLabel": "Upload Insurees",
   "tools.RegistersPage.insurees.downloadLabel": "Download Insurees",
-  "tools.ReportSearcher.moduleName": "{module} Module"
+  "tools.ReportSearcher.moduleName": "{module} Module",
+  "tools.ExtractsPage.password.label": "Password",
+  "tools.ExtractsPage.ResultDialog.downloadBtn": "Download",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.error": "Upload Claim Failed ",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.failed": "Check the file and the password",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.done": "Upload Claim Done"
 }
