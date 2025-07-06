@@ -141,8 +141,8 @@ const ClaimsUploadBlock = (props) => {
       const f = files.item(i);
       formData.append(f.name, f);
     }
-        // Ajout du mot de passe au formData
-        formData.append("password", password);
+    formData.append("password", password);
+
     try {
       const response = await fetch(`${EXTRACTS_URL}/upload_claims`, {
         headers: apiHeaders,
@@ -150,24 +150,48 @@ const ClaimsUploadBlock = (props) => {
         method: "POST",
         credentials: "same-origin",
       });
+
       if (response.status >= 400) {
         throw new Error("Unknown error");
       }
-      // Créer un objet URL pour le téléchargement
-      const responseClone = response.clone(); // Cloner la réponse pour pouvoir l'utiliser plusieurs fois
-      const blob = await responseClone.blob();
-      const url = window.URL.createObjectURL(blob);
-      setDownloadUrl(url);
 
-      setRequest({ 
-        isLoading: false, 
-        error: formatMessage("ClaimsUploadBlock.title"), 
-        payload: response,
-        status: response.status
-      });
+      const blob = await response.blob();
+
+      if (blob.type === "application/json") {
+        // La réponse est une erreur au format JSON
+        const text = await blob.text();
+        let jsonError;
+        try {
+          jsonError = JSON.parse(text);
+        } catch (e) {
+          jsonError = { message: text };
+        }
+
+        setRequest({
+          isLoading: false,
+          error: jsonError.message || formatMessage("ClaimsUploadBlock.errorMessage"),
+          status: response.status,
+        });
+        setDownloadUrl(null);
+      } else {
+        // La réponse est un fichier à télécharger
+        const url = window.URL.createObjectURL(blob);
+        setDownloadUrl(url);
+        setRequest({
+          isLoading: false,
+          error: null,
+          payload: response,
+          status: response.status,
+        });
+      }
     } catch (exc) {
       console.error(exc);
-      setRequest({ isLoading: false, message: exc.message || formatMessage("ClaimsUploadBlock.errorMessage") });
+      setRequest({
+        isLoading: false,
+        error: exc.message || formatMessage("ClaimsUploadBlock.errorMessage"),
+        status: 500,
+      });
+      setDownloadUrl(null);
     } finally {
       setFiles(null);
     }
@@ -182,13 +206,23 @@ const ClaimsUploadBlock = (props) => {
     <Block title={formatMessage("ClaimsUploadBlock.title")}>
       {request && (
         <CustomResultDialog
-          title={ request.status == 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.title") : formatMessage("ClaimsUploadBlock.ResultDialog.error")}
+          title={request.status == 200 && request.isLoading == false && downloadUrl != null ? formatMessage("ClaimsUploadBlock.ResultDialog.title") : request.isLoading == true ? formatMessage("ClaimsUploadBlock.ResultDialog.pending") : formatMessage("ClaimsUploadBlock.ResultDialog.error")}
           open
           onClose={onClose}
           downloadUrl={downloadUrl}
         >
           <ProgressOrError isLoading={request.isLoading} error={request.error} />
-          {request.status === 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.done") : formatMessage("ClaimsUploadBlock.ResultDialog.failed")}
+          {!request.isLoading && !request.error && downloadUrl && (
+            formatMessage("ClaimsUploadBlock.ResultDialog.done")
+          )}
+
+          {!request.isLoading && request.error && (
+              formatMessage("ClaimsUploadBlock.ResultDialog.failed")
+          )}
+
+          {request.isLoading && (
+            formatMessage("ClaimsUploadBlock.ResultDialog.pending")
+          )}        
         </CustomResultDialog>
       )}
       <Grid container spacing={2}>
@@ -202,16 +236,16 @@ const ClaimsUploadBlock = (props) => {
             }}
             type="file"
             value={files ? undefined : ""}
-            />
-          </Grid>
-          <Grid item xs={12}> 
-            <TextInput
-              required
-              type="password"
-              label={formatMessage("password.label")}
-              fullWidth
-              value={password}
-              onChange={(v) => setPassword(v)}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextInput
+            required
+            type="password"
+            label={formatMessage("password.label")}
+            fullWidth
+            value={password}
+            onChange={(v) => setPassword(v)}
           />
         </Grid>
         <Grid item xs={6}>
