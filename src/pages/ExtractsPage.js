@@ -142,8 +142,8 @@ const ClaimsUploadBlock = (props) => {
       const f = files.item(i);
       formData.append(f.name, f);
     }
-    // Ajout du mot de passe au formData
     formData.append("password", password);
+
     try {
       const response = await fetch(`${EXTRACTS_URL}/upload_claims`, {
         headers: apiHeaders,
@@ -151,27 +151,49 @@ const ClaimsUploadBlock = (props) => {
         method: "POST",
         credentials: "same-origin",
       });
+
       if (response.status >= 400) {
         throw new Error("Unknown error");
       }
 
-      // Créer un objet URL pour le téléchargement
-      const responseClone = response.clone(); // Cloner la réponse pour pouvoir l'utiliser plusieurs fois
-      const blob = await responseClone.blob();
-      const url = window.URL.createObjectURL(blob);
-      setDownloadUrl(url);
+      const blob = await response.blob();
 
-      setRequest({
-        isLoading: false,
-        error: formatMessage("ClaimsUploadBlock.title"),
-        payload: response,
-        status: response.status
-      });
+      if (blob.type === "application/json") {
+        // La réponse est une erreur au format JSON
+        const text = await blob.text();
+        let jsonError;
+        try {
+          jsonError = JSON.parse(text);
+        } catch (e) {
+          jsonError = { message: text };
+        }
+
+        setRequest({
+          isLoading: false,
+          error: jsonError.message || formatMessage("ClaimsUploadBlock.errorMessage"),
+          status: response.status,
+        });
+        setDownloadUrl(null);
+      } else {
+        // La réponse est un fichier à télécharger
+        const url = window.URL.createObjectURL(blob);
+        setDownloadUrl(url);
+        setRequest({
+          isLoading: false,
+          error: null,
+          payload: response,
+          status: response.status,
+        });
+      }
     } catch (exc) {
       console.error(exc);
-      setRequest({ isLoading: false, message: exc.message || formatMessage("ClaimsUploadBlock.errorMessage"), status: 500 });
+      setRequest({
+        isLoading: false,
+        error: exc.message || formatMessage("ClaimsUploadBlock.errorMessage"),
+        status: 500,
+      });
+      setDownloadUrl(null);
     } finally {
-      // Nous ne réinitialisons que les fichiers ici
       setFiles(null);
     }
   };
@@ -191,7 +213,17 @@ const ClaimsUploadBlock = (props) => {
           downloadUrl={downloadUrl}
         >
           <ProgressOrError isLoading={request.isLoading} error={request.error} />
-          {request.status === 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.done") : request.status === 500 ? formatMessage("ClaimsUploadBlock.ResultDialog.failed") : formatMessage("ClaimsUploadBlock.ResultDialog.ongoing")}
+          {!request.isLoading && !request.error && downloadUrl && (
+            formatMessage("ClaimsUploadBlock.ResultDialog.done")
+          )}
+
+          {!request.isLoading && request.error && (
+              formatMessage("ClaimsUploadBlock.ResultDialog.failed")
+          )}
+
+          {request.isLoading && (
+            formatMessage("ClaimsUploadBlock.ResultDialog.pending")
+          )}        
         </CustomResultDialog>
       )}
       <Grid container spacing={2}>
