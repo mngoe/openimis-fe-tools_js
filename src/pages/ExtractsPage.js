@@ -119,7 +119,7 @@ const ClaimsUploadBlock = (props) => {
   const [password, setPassword] = useState("");
   const [request, setRequest] = useState();
   const [downloadUrl, setDownloadUrl] = useState(null);
-  const [imported, setImported] = useState(0)
+  const [imported, setImported] = useState()
 
   // État initial pour réinitialisation
   const initialState = {
