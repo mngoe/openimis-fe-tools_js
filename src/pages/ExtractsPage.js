@@ -118,6 +118,7 @@ const ClaimsUploadBlock = (props) => {
   const [password, setPassword] = useState("");
   const [request, setRequest] = useState();
   const [downloadUrl, setDownloadUrl] = useState(null);
+  const [imported, setImported] = useState()
 
   // État initial pour réinitialisation
   const initialState = {
@@ -141,8 +142,8 @@ const ClaimsUploadBlock = (props) => {
       const f = files.item(i);
       formData.append(f.name, f);
     }
-        // Ajout du mot de passe au formData
-        formData.append("password", password);
+    formData.append("password", password);
+
     try {
       const response = await fetch(`${EXTRACTS_URL}/upload_claims`, {
         headers: apiHeaders,
@@ -150,45 +151,76 @@ const ClaimsUploadBlock = (props) => {
         method: "POST",
         credentials: "same-origin",
       });
-      if (response.status >= 400) {
-        throw new Error("Unknown error");
+      const result = await response.json();
+      if (response.status == 400 && result.imported) {
+        setImported(result.imported)
       }
-      // Créer un objet URL pour le téléchargement
-      const responseClone = response.clone(); // Cloner la réponse pour pouvoir l'utiliser plusieurs fois
-      const blob = await responseClone.blob();
-      const url = window.URL.createObjectURL(blob);
-      setDownloadUrl(url);
 
-      setRequest({ 
-        isLoading: false, 
-        error: formatMessage("ClaimsUploadBlock.title"), 
-        payload: response,
-        status: response.status
+      if (response.status == 400 && result.excel_base64) {
+        // Handle Excel file response
+        const binaryString = atob(result.excel_base64);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        const blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+        const url = window.URL.createObjectURL(blob);
+        setDownloadUrl(url);
+      }
+
+      setRequest({
+        isLoading: false,
+        error: result.errors ? formatMessage("ClaimsUploadBlock.errorMessage") : null,
+        status: response.status,
       });
     } catch (exc) {
       console.error(exc);
-      setRequest({ isLoading: false, message: exc.message || formatMessage("ClaimsUploadBlock.errorMessage") });
+      setRequest({
+        isLoading: false,
+        error: exc.message || formatMessage("ClaimsUploadBlock.errorMessage"),
+        status: 500,
+      });
+      setDownloadUrl(null);
     } finally {
       setFiles(null);
     }
   };
 
-    // Utiliser la fonction de réinitialisation complète
-    const onClose = () => {
-      resetAllState();
-    };
+  // Utiliser la fonction de réinitialisation complète
+  const onClose = () => {
+    resetAllState();
+  };
 
   return (
     <Block title={formatMessage("ClaimsUploadBlock.title")}>
       {request && (
         <CustomResultDialog
-          title={ request.status == 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.title") : formatMessage("ClaimsUploadBlock.ResultDialog.error")}
+          title={
+            request.status === 200
+              ? formatMessage("ClaimsUploadBlock.ResultDialog.title")
+              : request.status === 400
+                ? formatMessage("ClaimsUploadBlock.ResultDialog.error")
+                : formatMessage("ClaimsUploadBlock.ResultDialog.titleOngoing")
+          }
           open
           onClose={onClose}
           downloadUrl={downloadUrl}
         >
-          <ProgressOrError isLoading={request.isLoading} error={request.error} />
-          {request.status === 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.done") : formatMessage("ClaimsUploadBlock.ResultDialog.failed")}
+          {!request.isLoading && !request.error && downloadUrl && (
+            <p>{formatMessage("ClaimsUploadBlock.ResultDialog.done")}</p>
+          )}
+          {!request.isLoading && request.error && downloadUrl == null && (
+            <p>{formatMessage("ClaimsUploadBlock.ResultDialog.errorPassword")}</p>
+          )}
+          {!request.isLoading && request.error && downloadUrl && (
+            <>
+              <p>{formatMessage("ClaimsUploadBlock.ResultDialog.failed")}</p>
+              <p>{formatMessage("ClaimsUploadBlock.ResultDialog.imported")}: {imported}</p>
+            </>
+          )}
+          {request.isLoading && (
+            <p>{formatMessage("ClaimsUploadBlock.ResultDialog.pending")}</p>
+          )}
         </CustomResultDialog>
       )}
       <Grid container spacing={2}>
@@ -202,16 +234,16 @@ const ClaimsUploadBlock = (props) => {
             }}
             type="file"
             value={files ? undefined : ""}
-            />
-          </Grid>
-          <Grid item xs={12}> 
-            <TextInput
-              required
-              type="password"
-              label={formatMessage("password.label")}
-              fullWidth
-              value={password}
-              onChange={(v) => setPassword(v)}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextInput
+            required
+            type="password"
+            label={formatMessage("password.label")}
+            fullWidth
+            value={password}
+            onChange={(v) => setPassword(v)}
           />
         </Grid>
         <Grid item xs={6}>
