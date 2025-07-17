@@ -112,15 +112,11 @@
   "tools.ExtractsPage.password.label": "Password",
   "tools.ExtractsPage.ResultDialog.downloadBtn": "Upload",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.error": "Upload Claim Failed ",
-  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.failed": "Check the file and the password",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.errorPassword": "Check the file and the password",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.done": "Upload completed successfully",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.pending": "Upload in progress",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.ongoing": "Uploading claims ....",
-  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.titleOngoing": " Uploading ongoing "
-
-
-
-
-
-
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.titleOngoing": " Uploading ongoing ",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.failed": "Error while uploading claims",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.imported": "Number of imported claims"
 }
