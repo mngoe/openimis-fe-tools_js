@@ -119,6 +119,7 @@ const ClaimsUploadBlock = (props) => {
   const [password, setPassword] = useState("");
   const [request, setRequest] = useState();
   const [downloadUrl, setDownloadUrl] = useState(null);
+  const [imported, setImported] = useState()
 
   // État initial pour réinitialisation
   const initialState = {
@@ -151,40 +152,28 @@ const ClaimsUploadBlock = (props) => {
         method: "POST",
         credentials: "same-origin",
       });
-
-      if (response.status >= 400) {
-        throw new Error("Unknown error");
+      const result = await response.json();
+      if (response.status == 400 && result.imported) {
+        setImported(result.imported)
       }
 
-      const blob = await response.blob();
-
-      if (blob.type === "application/json") {
-        // La réponse est une erreur au format JSON
-        const text = await blob.text();
-        let jsonError;
-        try {
-          jsonError = JSON.parse(text);
-        } catch (e) {
-          jsonError = { message: text };
+      if (response.status == 400 && result.excel_base64) {
+        // Handle Excel file response
+        const binaryString = atob(result.excel_base64);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
         }
-
-        setRequest({
-          isLoading: false,
-          error: jsonError.message || formatMessage("ClaimsUploadBlock.errorMessage"),
-          status: response.status,
-        });
-        setDownloadUrl(null);
-      } else {
-        // La réponse est un fichier à télécharger
+        const blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
         const url = window.URL.createObjectURL(blob);
         setDownloadUrl(url);
-        setRequest({
-          isLoading: false,
-          error: null,
-          payload: response,
-          status: response.status,
-        });
       }
+
+      setRequest({
+        isLoading: false,
+        error: result.errors ? formatMessage("ClaimsUploadBlock.errorMessage") : null,
+        status: response.status,
+      });
     } catch (exc) {
       console.error(exc);
       setRequest({
@@ -207,23 +196,32 @@ const ClaimsUploadBlock = (props) => {
     <Block title={formatMessage("ClaimsUploadBlock.title")}>
       {request && (
         <CustomResultDialog
-          title={request.status == 200 ? formatMessage("ClaimsUploadBlock.ResultDialog.title") : request.status === 500 ? formatMessage("ClaimsUploadBlock.ResultDialog.error") : formatMessage("ClaimsUploadBlock.ResultDialog.titleOngoing")}
+          title={
+            request.status === 200
+              ? formatMessage("ClaimsUploadBlock.ResultDialog.title")
+              : request.status === 400
+                ? formatMessage("ClaimsUploadBlock.ResultDialog.error")
+                : formatMessage("ClaimsUploadBlock.ResultDialog.titleOngoing")
+          }
           open
           onClose={onClose}
           downloadUrl={downloadUrl}
         >
-          <ProgressOrError isLoading={request.isLoading} error={request.error} />
           {!request.isLoading && !request.error && downloadUrl && (
-            formatMessage("ClaimsUploadBlock.ResultDialog.done")
+            <p>{formatMessage("ClaimsUploadBlock.ResultDialog.done")}</p>
           )}
-
-          {!request.isLoading && request.error && (
-              formatMessage("ClaimsUploadBlock.ResultDialog.failed")
+          {!request.isLoading && request.error && downloadUrl == null && (
+            <p>{formatMessage("ClaimsUploadBlock.ResultDialog.errorPassword")}</p>
           )}
-
+          {!request.isLoading && request.error && downloadUrl && (
+            <>
+              <p>{formatMessage("ClaimsUploadBlock.ResultDialog.failed")}</p>
+              <p>{formatMessage("ClaimsUploadBlock.ResultDialog.imported")}: {imported}</p>
+            </>
+          )}
           {request.isLoading && (
-            formatMessage("ClaimsUploadBlock.ResultDialog.pending")
-          )}        
+            <p>{formatMessage("ClaimsUploadBlock.ResultDialog.pending")}</p>
+          )}
         </CustomResultDialog>
       )}
       <Grid container spacing={2}>
