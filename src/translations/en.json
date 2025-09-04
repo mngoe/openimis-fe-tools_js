@@ -118,5 +118,7 @@
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.ongoing": "Uploading claims ....",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.titleOngoing": " Uploading ongoing ",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.failed": "Error while uploading claims",
-  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.imported": "Number of imported claims"
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.imported": "Number of imported claims",
+  "tools.ExtractsPage.ClaimsUploadBlock.errorMessage": "Error occured while importing data",
+  "tools.ExtractsPage.ClaimsUploadBlock.badgatewayError": "Gateway Time-out"
 }

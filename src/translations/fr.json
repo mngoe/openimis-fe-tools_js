@@ -8,5 +8,7 @@
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.titleOngoing": " Téléversement en cours",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.pending": "Téléversement en cours",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.failed": "Erreur lors du téléversement des prestations",
-  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.imported": "Nombre de prestations importés"
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.imported": "Nombre de prestations importés",
+  "tools.ExtractsPage.ClaimsUploadBlock.errorMessage": "Une erreur s'est produite lors de l'import",
+  "tools.ExtractsPage.ClaimsUploadBlock.badgatewayError": "Gateway Time-out"
 }

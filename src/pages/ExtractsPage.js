@@ -153,7 +153,7 @@ const ClaimsUploadBlock = (props) => {
         credentials: "same-origin",
       });
       const result = await response.json();
-      if (response.status == 400 && result.imported) {
+      if (response.status == 200 && result.imported) {
         setImported(result.imported)
       }
 
@@ -171,7 +171,7 @@ const ClaimsUploadBlock = (props) => {
 
       setRequest({
         isLoading: false,
-        error: result.errors ? formatMessage("ClaimsUploadBlock.errorMessage") : null,
+        error: response.status == 504 ? formatMessage("ClaimsUploadBlock.badgatewayError") : result.errors ? formatMessage("ClaimsUploadBlock.errorMessage") : null,
         status: response.status,
       });
     } catch (exc) {
@@ -248,7 +248,7 @@ const ClaimsUploadBlock = (props) => {
           />
         </Grid>
         <Grid item xs={6}>
-          <Button disabled={!files || request?.isLoading ||  password == ""} variant="contained" onClick={onSubmit}>
+          <Button disabled={!files || request?.isLoading || password == ""} variant="contained" onClick={onSubmit}>
             <Keyboard />{formatMessage("ClaimsUploadBlock.uploadBtn")}
           </Button>
         </Grid>
@@ -380,7 +380,7 @@ const RenewalsUploadBlock = (props) => {
           />
         </Grid>
         <Grid item xs={6}>
-          <Button disabled={!files || request?.isLoading } variant="contained" onClick={onSubmit}>
+          <Button disabled={!files || request?.isLoading} variant="contained" onClick={onSubmit}>
             <RenewIcon />{formatMessage("RenewalsUploadBlock.uploadBtn")}
           </Button>
         </Grid>
