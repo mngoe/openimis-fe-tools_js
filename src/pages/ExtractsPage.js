@@ -248,7 +248,7 @@ const ClaimsUploadBlock = (props) => {
           />
         </Grid>
         <Grid item xs={6}>
-          <Button disabled={!files || request?.isLoading} variant="contained" onClick={onSubmit}>
+          <Button disabled={!files || request?.isLoading ||  password == ""} variant="contained" onClick={onSubmit}>
             <Keyboard />{formatMessage("ClaimsUploadBlock.uploadBtn")}
           </Button>
         </Grid>
@@ -380,7 +380,7 @@ const RenewalsUploadBlock = (props) => {
           />
         </Grid>
         <Grid item xs={6}>
-          <Button disabled={!files || request?.isLoading} variant="contained" onClick={onSubmit}>
+          <Button disabled={!files || request?.isLoading } variant="contained" onClick={onSubmit}>
             <RenewIcon />{formatMessage("RenewalsUploadBlock.uploadBtn")}
           </Button>
         </Grid>
