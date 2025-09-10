@@ -115,11 +115,13 @@ const CustomResultDialog = ({ open, title, isLoading, children, onClose, downloa
 const ClaimsUploadBlock = (props) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
+  const { formatMessageWithValues } = useTranslations("tools.ExtractsPage", modulesManager);
   const [files, setFiles] = useState();
   const [password, setPassword] = useState("");
   const [request, setRequest] = useState();
   const [downloadUrl, setDownloadUrl] = useState(null);
   const [imported, setImported] = useState()
+  const [failed, setFailed] = useState();
 
   // État initial pour réinitialisation
   const initialState = {
@@ -132,7 +134,6 @@ const ClaimsUploadBlock = (props) => {
   const resetAllState = () => {
     setFiles(null);
     setPassword("");
-    setRequest(undefined);
     setDownloadUrl(null);
   };
 
@@ -154,10 +155,9 @@ const ClaimsUploadBlock = (props) => {
       });
       const result = await response.json();
       if (response.status == 200 && result.imported) {
-        setImported(result.imported)
-      }
-
-      if (response.status == 400 && result.excel_base64) {
+        setImported(result.imported);
+        setFailed(0);
+      } else if (response.status == 400 && result.excel_base64) {
         // Handle Excel file response
         const binaryString = atob(result.excel_base64);
         const bytes = new Uint8Array(binaryString.length);
@@ -167,13 +167,21 @@ const ClaimsUploadBlock = (props) => {
         const blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
         const url = window.URL.createObjectURL(blob);
         setDownloadUrl(url);
-      }
+        setImported(result.imported)
+        setFailed(result.errors.length)
 
-      setRequest({
-        isLoading: false,
-        error: response.status == 504 ? formatMessage("ClaimsUploadBlock.badgatewayError") : result.errors ? formatMessage("ClaimsUploadBlock.errorMessage") : null,
-        status: response.status,
-      });
+        setRequest({
+          isLoading: false,
+          error: formatMessage("ClaimsUploadBlock.errorMessage"),
+          status: response.status,
+        });
+      } else {
+        setRequest({
+          isLoading: false,
+          error: formatMessage("ClaimsUploadBlock.errorMessage"),
+          status: response.status,
+        });
+      }
     } catch (exc) {
       console.error(exc);
       setRequest({
@@ -182,14 +190,15 @@ const ClaimsUploadBlock = (props) => {
         status: 500,
       });
       setDownloadUrl(null);
-    } finally {
-      setFiles(null);
     }
   };
 
   // Utiliser la fonction de réinitialisation complète
   const onClose = () => {
-    resetAllState();
+    if(downloadUrl){
+      resetAllState();
+    }
+    setRequest(undefined);
   };
 
   return (
@@ -215,9 +224,13 @@ const ClaimsUploadBlock = (props) => {
           )}
           {!request.isLoading && request.error && downloadUrl && (
             <>
-              <p>{formatMessage("ClaimsUploadBlock.ResultDialog.failed")}</p>
-              <p>{formatMessage("ClaimsUploadBlock.ResultDialog.imported")}: {imported}</p>
+              <p>{formatMessage("ClaimsUploadBlock.ResultDialog.errorMessage")}</p>
+              <p>{formatMessageWithValues("ClaimsUploadBlock.ResultDialog.imported", {value: imported})}</p>
+              <p>{formatMessageWithValues("ClaimsUploadBlock.ResultDialog.failed", {value: failed})}</p>
             </>
+          )}
+          {!request.isLoading && request.status === 504 && (
+            <p>{formatMessage("ClaimsUploadBlock.ResultDialog.badgatewayError")}</p>
           )}
           {request.isLoading && (
             <p>{formatMessage("ClaimsUploadBlock.ResultDialog.pending")}</p>

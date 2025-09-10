@@ -1,14 +1,15 @@
 {
   "tools.ExtractsPage.password.label": "Mot de passe ",
   "tools.ExtractsPage.ResultDialog.downloadBtn": "Télécharger",
-  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.error": "Échec du téléversement des claims",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.error": "Échec de téléversement",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.errorPassword": " Vérifiez le fichier et le mot de passe.",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.done": "Téléversement effectué avec succès",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.ongoing": "Téléversement des prestations cours.....",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.titleOngoing": " Téléversement en cours",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.pending": "Téléversement en cours",
-  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.failed": "Erreur lors du téléversement des prestations",
-  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.imported": "Nombre de prestations importés",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.errorMessage": "Veuillez télécharger le rapport de téléversement",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.imported": "Importations réussies: {value}",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.failed": "Importations échouées: {value}",
   "tools.ExtractsPage.ClaimsUploadBlock.errorMessage": "Une erreur s'est produite lors de l'import",
   "tools.ExtractsPage.ClaimsUploadBlock.badgatewayError": "Gateway Time-out"
 }
