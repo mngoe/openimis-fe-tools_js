@@ -110,8 +110,16 @@
   "tools.RegistersPage.insurees.downloadLabel": "Download Insurees",
   "tools.ReportSearcher.moduleName": "{module} Module",
   "tools.ExtractsPage.password.label": "Password",
-  "tools.ExtractsPage.ResultDialog.downloadBtn": "Download",
+  "tools.ExtractsPage.ResultDialog.downloadBtn": "Upload",
   "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.error": "Upload Claim Failed ",
-  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.failed": "Check the file and the password",
-  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.done": "Upload Claim Done"
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.errorPassword": "Check the file and the password",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.done": "Upload completed successfully",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.pending": "Upload in progress",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.ongoing": "Uploading claims ....",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.titleOngoing": " Uploading ongoing ",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.errorMessage": "Error while uploading claims",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.imported": "Number of imported claims: {value}",
+  "tools.ExtractsPage.ClaimsUploadBlock.ResultDialog.failed": "Number of failed claims: {value}",
+  "tools.ExtractsPage.ClaimsUploadBlock.errorMessage": "Error occured while importing data",
+  "tools.ExtractsPage.ClaimsUploadBlock.badgatewayError": "Gateway Time-out"
 }
