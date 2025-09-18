@@ -168,7 +168,7 @@ const ClaimsUploadBlock = (props) => {
         const url = window.URL.createObjectURL(blob);
         setDownloadUrl(url);
         setImported(result.imported)
-        setFailed(result.errors.length)
+        setFailed(result.failed)
 
         setRequest({
           isLoading: false,
