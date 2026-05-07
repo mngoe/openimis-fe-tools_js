@@ -19,7 +19,21 @@
     "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.invoiceCode": "Code de facture",
     "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.paiementId": "Id du paiement",
     "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.completed": "Achevé",
-    "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.totalKmf": "Total (KMF)"
+    "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.totalKmf": "Total (KMF)",
+    "tools.ExtractsPage.OtherPaymentUploadBlock.title": "Téléverser les détails des autres mode de paiement",
+    "tools.ExtractsPage.ResultDialog.success": "Importation réussie",
+    "tools.ExtractsPage.OtherPaymentUploadBlock.ResultDialog.title": "Résultat de l'import des autres mode de paiement",
+    "tools.ExtractsPage.errorMessage": "Erreur lors de l'import des données",
+    "tools.ExtractsPage.ResultDialog.#": "#",
+    "tools.ExtractsPage.ResultDialog.amount": "Montant",
+    "tools.ExtractsPage.ResultDialog.status": "Statut",
+    "tools.ExtractsPage.ResultDialog.invoiceCode": "Code de facture",
+    "tools.ExtractsPage.ResultDialog.paiementId": "Id du paiement",
+    "tools.ExtractsPage.ResultDialog.completed": "Achevé",
+    "tools.ExtractsPage.ResultDialog.totalKmf": "Total (KMF)",
+    "tools.ExtractsPage.importBtn": "Import",
+    "tools.ExtractsPage.ResultDialog.totalTransaction": "Nombre de transaction traitées",
+    "tools.ExtractsPage.ResultDialog.chfID": "Numéro d'assuré"
 
 
 
