@@ -590,7 +590,7 @@ const OtherPaymentUploadBlock = (props) => {
       }
     } catch (exc) {
       console.error(exc);
-      //setRequest({ isLoading: false, error: exc.message || formatMessage("EximBankUploadBlock.errorMessage") });
+      //setRequest({ isLoading: false, error: exc.message || formatMessage("errorMessage") });
     } finally {
       setFiles(null);
     }
@@ -610,23 +610,23 @@ const OtherPaymentUploadBlock = (props) => {
           <>
             {request.payload.success && (
               <p style={{ color: "green", fontWeight: "bold" }}>
-                {formatMessage("OtherPaymentUploadBlock.ResultDialog.success")}
+                {formatMessage("ResultDialog.success")}
               </p>
             )}
 
-            <p><strong>{formatMessage("OtherPaymentUploadBlock.ResultDialog.totalTransaction")} :</strong> {request.payload.transactions.length}</p>
-            <p><strong>{formatMessage("OtherPaymentUploadBlock.ResultDialog.totalKmf")} : </strong> {request.payload.total_kmf}</p>
+            <p><strong>{formatMessage("ResultDialog.totalTransaction")} :</strong> {request.payload.transactions.length}</p>
+            <p><strong>{formatMessage("ResultDialog.totalKmf")} : </strong> {request.payload.total_kmf}</p>
 
             {request.payload.processed.length ? (
             <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "1rem" }}>
               <thead>
                 <tr>
-                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("OtherPaymentUploadBlock.ResultDialog.#")}</th>
-                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("OtherPaymentUploadBlock.ResultDialog.chfID")}</th>
-                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("OtherPaymentUploadBlock.ResultDialog.amount")}</th>
-                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("OtherPaymentUploadBlock.ResultDialog.status")}</th>
-                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("OtherPaymentUploadBlock.ResultDialog.invoiceCode")}</th>
-                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("OtherPaymentUploadBlock.ResultDialog.completed")}</th>
+                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("ResultDialog.#")}</th>
+                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("ResultDialog.chfID")}</th>
+                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("ResultDialog.amount")}</th>
+                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("ResultDialog.status")}</th>
+                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("ResultDialog.invoiceCode")}</th>
+                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("ResultDialog.completed")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -668,7 +668,7 @@ const OtherPaymentUploadBlock = (props) => {
         </Grid>
         <Grid item xs={6}>
           <Button disabled={!files || request?.isLoading} variant="contained" onClick={onSubmit}>
-            <Keyboard />{formatMessage("OtherPaymentUploadBlock.uploadBtn")}
+            <Keyboard />{formatMessage("uploadBtn")}
           </Button>
         </Grid>
       </Grid>
