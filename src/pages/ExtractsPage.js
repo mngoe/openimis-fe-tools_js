@@ -565,6 +565,117 @@ const BdcBankUploadBlock = (props) => {
   );
 };
 
+const OtherPaymentUploadBlock = (props) => {
+  const modulesManager = useModulesManager();
+  const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
+  const [files, setFiles] = useState();
+  const [request, setRequest] = useState();
+  const onSubmit = async () => {
+    setRequest({ isLoading: true });
+    const formData = new FormData();
+    const f = files.item(0);
+    formData.append("file", f);
+    try {
+      const response = await fetch(`${BANK_URL}/other_payment`, {
+        headers: apiHeaders,
+        body: formData,
+        method: "POST",
+        credentials: "same-origin",
+      });
+      const responseBody = await response.json();
+      if (response.status >= 400) {
+        setRequest({ isLoading: false, errors: responseBody.errors, payload: responseBody });
+      } else {
+        setRequest({ isLoading: false, error: null, payload: responseBody });
+      }
+    } catch (exc) {
+      console.error(exc);
+      //setRequest({ isLoading: false, error: exc.message || formatMessage("EximBankUploadBlock.errorMessage") });
+    } finally {
+      setFiles(null);
+    }
+  };
+
+  return (
+    <Block title={formatMessage("OtherPaymentUploadBlock.title")}>
+      {request && (
+        <ResultDialog
+        title={formatMessage("OtherPaymentUploadBlock.ResultDialog.title")}
+        open
+        onClose={() => setRequest(undefined)}
+      >
+        <ProgressOrError isLoading={request.isLoading} error={request.error} />
+
+        {!!request.payload && (
+          <>
+            {request.payload.success && (
+              <p style={{ color: "green", fontWeight: "bold" }}>
+                {formatMessage("OtherPaymentUploadBlock.ResultDialog.success")}
+              </p>
+            )}
+
+            <p><strong>{formatMessage("OtherPaymentUploadBlock.ResultDialog.totalTransaction")} :</strong> {request.payload.transactions.length}</p>
+            <p><strong>{formatMessage("OtherPaymentUploadBlock.ResultDialog.totalKmf")} : </strong> {request.payload.total_kmf}</p>
+
+            {request.payload.processed.length ? (
+            <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "1rem" }}>
+              <thead>
+                <tr>
+                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("OtherPaymentUploadBlock.ResultDialog.#")}</th>
+                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("OtherPaymentUploadBlock.ResultDialog.chfID")}</th>
+                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("OtherPaymentUploadBlock.ResultDialog.amount")}</th>
+                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("OtherPaymentUploadBlock.ResultDialog.status")}</th>
+                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("OtherPaymentUploadBlock.ResultDialog.invoiceCode")}</th>
+                  <th style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{formatMessage("OtherPaymentUploadBlock.ResultDialog.completed")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {request.payload.processed.map((tx, index) => (
+                  <tr key={index}>
+                    <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{index + 1}</td>
+                    <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.insuree_chf_id}</td>
+                    <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.amount}</td>
+                    <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.status}</td>
+                    <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{tx.invoice_code || "N/A"}</td>
+                    <td style={{ border: "1px solid #ccc", padding: "0.5rem" }}>{!!tx.complete ? (tx.complete).toString() : "N/A"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>) : null}
+
+            {/* Liste des erreurs en dessous du tableau */}
+            {request.errors?.length > 0 && (
+              <ul style={{ color: "red" }}>
+                {request.errors.map((str, index) => (
+                  <li key={index}>{str}</li>
+                ))}
+              </ul>
+            )}
+          </>
+        )}
+      </ResultDialog>
+      )}
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Input
+            onChange={(event) => setFiles(event.target.files)}
+            required
+            inputProps={{
+              accept: ".xlsx, application/xlsx, text/xlsx",
+            }}
+            type="file"
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Button disabled={!files || request?.isLoading} variant="contained" onClick={onSubmit}>
+            <Keyboard />{formatMessage("OtherPaymentUploadBlock.uploadBtn")}
+          </Button>
+        </Grid>
+      </Grid>
+    </Block>
+  );
+};
+
 const ExtractsPage = (props) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
@@ -609,6 +720,9 @@ const ExtractsPage = (props) => {
           </Grid>
           <Grid item xs={4}>
             <BdcBankUploadBlock />
+          </Grid>
+          <Grid item xs={4}>
+            <OtherPaymentUploadBlock />
           </Grid>
         </Grid>
       </Box>

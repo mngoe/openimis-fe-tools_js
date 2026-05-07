@@ -129,5 +129,20 @@
   "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.invoiceCode": "Invoide code",
   "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.paiementId": "Payment Id",
   "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.completed": "Completed",
-  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.totalKmf": "Total (KMF)"
+  "tools.ExtractsPage.BdcBankUploadBlock.ResultDialog.totalKmf": "Total (KMF)",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.title": "Upload Other payment details Report",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.uploadBtn": "Upload",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.ResultDialog.okBtn": "OK",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.ResultDialog.success": "Success import",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.ResultDialog.title": "Other Payment upload result",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.errorMessage": " Error while upload data",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.ResultDialog.#": "#",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.ResultDialog.totalTransaction": "Number of processed transactions",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.ResultDialog.chfID": "Insuree number",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.ResultDialog.amount": "Amount",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.ResultDialog.status": "Status",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.ResultDialog.invoiceCode": "Invoide code",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.ResultDialog.paiementId": "Payment Id",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.ResultDialog.completed": "Completed",
+  "tools.ExtractsPage.OtherPaymentUploadBlock.ResultDialog.totalKmf": "Total (KMF)"
 }
