@@ -156,6 +156,11 @@ const ClaimsUploadBlock = (props) => {
       if (response.status == 200 && result.imported) {
         setImported(result.imported);
         setFailed(0);
+        setRequest({
+          isLoading: false,
+          error: null,
+          status: response.status,
+        });
       } else if (response.status == 400 && result.excel_base64) {
         // Handle Excel file response
         const binaryString = atob(result.excel_base64);
@@ -204,12 +209,10 @@ const ClaimsUploadBlock = (props) => {
     <Block title={formatMessage("ClaimsUploadBlock.title")}>
       {request && (
         <CustomResultDialog
-          title={
+          title={request.isLoading ? formatMessage("ClaimsUploadBlock.ResultDialog.titleOngoing") :
             request.status === 200
               ? formatMessage("ClaimsUploadBlock.ResultDialog.title")
-              : request.status === 400
-                ? formatMessage("ClaimsUploadBlock.ResultDialog.error")
-                : formatMessage("ClaimsUploadBlock.ResultDialog.titleOngoing")
+              : formatMessage("ClaimsUploadBlock.ResultDialog.error")
           }
           open
           onClose={onClose}
