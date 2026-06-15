@@ -12,7 +12,7 @@ import {
 } from "@openimis/fe-core";
 import { useSelector } from "react-redux";
 
-import { Box, Grid, Button, Input, Dialog, DialogContent, DialogTitle, DialogActions } from "@material-ui/core";
+import { Box, Grid, Button, Input, Dialog, DialogContent, DialogTitle, DialogActions, CircularProgress, Typography } from "@material-ui/core";
 import { People, Autorenew as RenewIcon, Keyboard } from "@material-ui/icons";
 import FeedbackIcon from "@material-ui/icons/SpeakerNotesOutlined";
 import Block from "../components/Block";
@@ -195,7 +195,7 @@ const ClaimsUploadBlock = (props) => {
 
   // Utiliser la fonction de réinitialisation complète
   const onClose = () => {
-    if(downloadUrl){
+    if (downloadUrl) {
       resetAllState();
     }
     setRequest(undefined);
@@ -233,7 +233,10 @@ const ClaimsUploadBlock = (props) => {
             <p>{formatMessage("ClaimsUploadBlock.ResultDialog.badgatewayError")}</p>
           )}
           {request.isLoading && (
-            <p>{formatMessage("ClaimsUploadBlock.ResultDialog.pending")}</p>
+            <Box display="flex" alignItems="center">
+              <CircularProgress size={24} style={{ marginRight: 16 }} />
+              <Typography>{formatMessage("ClaimsUploadBlock.ResultDialog.pending")}</Typography>
+            </Box>
           )}
         </CustomResultDialog>
       )}
