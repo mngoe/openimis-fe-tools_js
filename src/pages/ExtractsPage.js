@@ -218,7 +218,7 @@ const ClaimsUploadBlock = (props) => {
           onClose={onClose}
           downloadUrl={downloadUrl}
         >
-          {!request.isLoading && !request.error && downloadUrl && (
+          {!request.isLoading && !request.error && (
             <p>{formatMessage("ClaimsUploadBlock.ResultDialog.done")}</p>
           )}
           {!request.isLoading && request.error && downloadUrl == null && (
