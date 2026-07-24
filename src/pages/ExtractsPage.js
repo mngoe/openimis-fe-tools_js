@@ -175,11 +175,21 @@ const ClaimsUploadBlock = (props) => {
           status: response.status,
         });
       } else {
-        setRequest({
-          isLoading: false,
-          error: formatMessage("ClaimsUploadBlock.errorMessage"),
-          status: response.status,
-        });
+        const errors = result.errors;
+        const passwordMissing = errors.some(item => item.includes('Password missing or incorrect'));
+        if(passwordMissing){
+          setRequest({
+            isLoading: false,
+            error: formatMessage("ClaimsUploadBlock.ResultDialog.errorPassword"),
+            status: response.status
+          })
+        } else {
+            setRequest({
+            isLoading: false,
+            error: errors[1] || formatMessage("ClaimsUploadBlock.ResultDialog.errorPassword"),
+            status: response.status,
+          });
+        }
       }
     } catch (exc) {
       console.error(exc);
@@ -219,7 +229,7 @@ const ClaimsUploadBlock = (props) => {
             <p>{formatMessage("ClaimsUploadBlock.ResultDialog.done")}</p>
           )}
           {!request.isLoading && request.error && downloadUrl == null && (
-            <p>{formatMessage("ClaimsUploadBlock.ResultDialog.errorPassword")}</p>
+            <p>{request.error}</p>
           )}
           {!request.isLoading && request.error && downloadUrl && (
             <>
