@@ -12,7 +12,7 @@ import {
 } from "@openimis/fe-core";
 import { useSelector } from "react-redux";
 
-import { Box, Grid, Button, Input, Dialog, DialogContent, DialogTitle, DialogActions } from "@material-ui/core";
+import { Box, Grid, Button, Input, Dialog, DialogContent, DialogTitle, DialogActions, CircularProgress, Typography } from "@material-ui/core";
 import { People, Autorenew as RenewIcon, Keyboard } from "@material-ui/icons";
 import FeedbackIcon from "@material-ui/icons/SpeakerNotesOutlined";
 import Block from "../components/Block";
@@ -156,6 +156,11 @@ const ClaimsUploadBlock = (props) => {
       if (response.status == 200 && result.imported) {
         setImported(result.imported);
         setFailed(0);
+        setRequest({
+          isLoading: false,
+          error: null,
+          status: response.status,
+        });
       } else if (response.status == 400 && result.excel_base64) {
         // Handle Excel file response
         const binaryString = atob(result.excel_base64);
@@ -175,11 +180,21 @@ const ClaimsUploadBlock = (props) => {
           status: response.status,
         });
       } else {
-        setRequest({
-          isLoading: false,
-          error: formatMessage("ClaimsUploadBlock.errorMessage"),
-          status: response.status,
-        });
+        const errors = result.errors;
+        const passwordMissing = errors.some(item => item.includes('Password missing or incorrect'));
+        if(passwordMissing){
+          setRequest({
+            isLoading: false,
+            error: formatMessage("ClaimsUploadBlock.ResultDialog.errorPassword"),
+            status: response.status
+          })
+        } else {
+            setRequest({
+            isLoading: false,
+            error: errors[1] || formatMessage("ClaimsUploadBlock.ResultDialog.errorPassword"),
+            status: response.status,
+          });
+        }
       }
     } catch (exc) {
       console.error(exc);
@@ -204,22 +219,20 @@ const ClaimsUploadBlock = (props) => {
     <Block title={formatMessage("ClaimsUploadBlock.title")}>
       {request && (
         <CustomResultDialog
-          title={
+          title={request.isLoading ? formatMessage("ClaimsUploadBlock.ResultDialog.titleOngoing") :
             request.status === 200
               ? formatMessage("ClaimsUploadBlock.ResultDialog.title")
-              : request.status === 400
-                ? formatMessage("ClaimsUploadBlock.ResultDialog.error")
-                : formatMessage("ClaimsUploadBlock.ResultDialog.titleOngoing")
+              : formatMessage("ClaimsUploadBlock.ResultDialog.error")
           }
           open
           onClose={onClose}
           downloadUrl={downloadUrl}
         >
-          {!request.isLoading && !request.error && downloadUrl && (
+          {!request.isLoading && !request.error && (
             <p>{formatMessage("ClaimsUploadBlock.ResultDialog.done")}</p>
           )}
           {!request.isLoading && request.error && downloadUrl == null && (
-            <p>{formatMessage("ClaimsUploadBlock.ResultDialog.errorPassword")}</p>
+            <p>{request.error}</p>
           )}
           {!request.isLoading && request.error && downloadUrl && (
             <>
@@ -232,7 +245,10 @@ const ClaimsUploadBlock = (props) => {
             <p>{formatMessage("ClaimsUploadBlock.ResultDialog.badgatewayError")}</p>
           )}
           {request.isLoading && (
-            <p>{formatMessage("ClaimsUploadBlock.ResultDialog.pending")}</p>
+            <Box display="flex" alignItems="center">
+              <CircularProgress size={24} style={{ marginRight: 16 }} />
+              <Typography>{formatMessage("ClaimsUploadBlock.ResultDialog.pending")}</Typography>
+            </Box>
           )}
         </CustomResultDialog>
       )}
