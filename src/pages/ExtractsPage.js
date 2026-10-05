@@ -237,8 +237,8 @@ const ClaimsUploadBlock = (props) => {
           {!request.isLoading && request.error && downloadUrl && (
             <>
               <p>{formatMessage("ClaimsUploadBlock.ResultDialog.errorMessage")}</p>
-              <p>{formatMessageWithValues("ClaimsUploadBlock.ResultDialog.imported", { value: imported })}</p>
-              <p>{formatMessageWithValues("ClaimsUploadBlock.ResultDialog.failed", { value: failed })}</p>
+              <p>{formatMessageWithValues("ClaimsUploadBlock.ResultDialog.imported", {value: imported})}</p>
+              <p>{formatMessageWithValues("ClaimsUploadBlock.ResultDialog.failed", {value: failed})}</p>
             </>
           )}
           {!request.isLoading && request.status === 504 && (
@@ -494,7 +494,6 @@ const ExtractsPage = (props) => {
   const EXTRACTS_URL = `${baseApiUrl}/tools/extracts`;
 
   const onExtractDownload = (extract) => (e) => window.open(`${EXTRACTS_URL}/download_${extract}`);
-
 
   return (
     <>
