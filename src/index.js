@@ -8,6 +8,7 @@ import { EmailSettingsPage } from "./pages/EmailSettingsPage";
 import ReportsPage from "./pages/ReportsPage";
 
 import messages_en from "./translations/en.json";
+
 import ReportDefinitionEditorDialog from "./components/ReportDefinitionEditorDialog";
 import ReportPicker from "./components/ReportPicker";
 
