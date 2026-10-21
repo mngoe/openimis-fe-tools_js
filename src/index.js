@@ -12,6 +12,7 @@ import messages_en from "./translations/en.json";
 import ReportDefinitionEditorDialog from "./components/ReportDefinitionEditorDialog";
 import ReportPicker from "./components/ReportPicker";
 
+
 const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: messages_en }],
   "refs": [

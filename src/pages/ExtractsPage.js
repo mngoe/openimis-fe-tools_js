@@ -111,7 +111,6 @@ const CustomResultDialog = ({ open, title, isLoading, children, onClose, downloa
     </Dialog>
   );
 };
-
 const ClaimsUploadBlock = (props) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("tools.ExtractsPage", modulesManager);
